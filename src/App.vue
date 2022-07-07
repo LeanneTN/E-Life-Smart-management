@@ -1,8 +1,6 @@
 <template>
   <div id="app">
-    <router-view></router-view>       <!-- 使用该标签后，配置的路由在该页面内生效，路由对应的组件也被引入 -->
-
-    <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
+    <router-view></router-view>       <!--使用该标签后，配置的路由在该页面内生效，路由对应的组件也被引入-->
     
   </div>
 </template>

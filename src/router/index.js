@@ -9,24 +9,83 @@ import VueRouter from "vue-router";
 Vue.use(VueRouter)
 
 //引入需要路由的页面：
-import Home from '../pages/Home.vue'
-import User from '../pages/User.vue'
+import Main from '../pages/Main.vue'
+import Home from '../pages/Home';
+import UserManage from '../pages/UserManage'
+import PayManage from '../pages/PayManage'
+import ForumManage from '../pages/ForumManage'
+import RepairManage from '../pages/RepairManage'
+import CarManage from '../pages/ParkManage/CarManage'
+import LotManage from '../pages/ParkManage/LotManage'
+import HealthCard from '../pages/EpidemicManage/HealthCard'
+import AcidTest from '../pages/EpidemicManage/AcidTest'
+import AbnormalTravel from '../pages/EpidemicManage/AbnormalTravel'
+
 
 //---------------------注意，此处必须写routes，不能写routers---------------------------
 const routes = [            
     {
         path:'/',
-        name:'Home',    
-        component: Home     //这一项来自上方页面的引入
-    },
-    {
-        path:'/user',
-        name:'User',
-        component:User
-    }
+        name:'Main',    
+        component: Main,     //这一项来自上方页面的引入
+        children:[           //配置子路由
+        {
+            path:'/Home',
+            name:'Home',
+            component:Home
+        },
+        {
+            path:'/UserManage',
+            name:'UserManage',
+            component:UserManage
+        },
+        {
+            path:'/PayManage',
+            name:'PayManage',
+            component:PayManage
+        },
+        {
+            path:'/ForumManage',
+            name:'ForumManage',
+            component:ForumManage
+        },
+        {
+            path:'/RepairManage',
+            name:'RepairManage',
+            component:RepairManage
+        },
+        // 停车管理
+        {
+            path:'/ParkManage/CarManage',
+            name:'CarManage',
+            component:CarManage
+        },
+        {
+            path:'/ParkManage/LotManage',
+            name:'LotManage',
+            component:LotManage
+        },
+        //疫情管理
+        {
+            path:'/EpidemicManage/HealthCard',
+            name:'HealthCard',
+            component:HealthCard
+        },
+        {
+            path:'/EpidemicManage/AcidTest',
+            name:'AcidTest',
+            component:AcidTest
+        },
+        {
+            path:'/EpidemicManage/AbnormalTravel',
+            name:'AbnormalTravel',
+            component:AbnormalTravel
+        }
+        ]
+     },
 ]
 
-const  router = new VueRouter({
+const router = new VueRouter({
     mode:'history', //路由匹配模式
     routes         //将路由表装入
 })
