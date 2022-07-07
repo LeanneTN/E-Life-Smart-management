@@ -5,7 +5,9 @@
                 <Aside></Aside>
             </el-aside>
             <el-container>
-                <el-header>Header</el-header>
+                <el-header>
+                    <Header></Header>
+                </el-header>
                 <el-main>
                     <router-view></router-view>
                 </el-main>
@@ -17,11 +19,13 @@
 
 <script> 
 import Aside from '../components/Common/Aside.vue'      //导出组件
+import Header from '../components/Common/Header.vue'
 
 export default {
     name:'Home',   
     components:{        
-        Aside               //将上面导出的组件引入
+        Aside,
+        Header               //将上面导出的组件引入
     } ,
     data(){
         return {

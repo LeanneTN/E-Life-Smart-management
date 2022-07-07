@@ -5,7 +5,8 @@ import App from './App.vue'
  import ElementUI from 'element-ui'*/
 import 'element-ui/lib/theme-chalk/index.css'
 import{Button,Input,Container,Aside,Header,Main,
-       Menu,Submenu,MenuItemGroup,MenuItem} from  'element-ui';
+       Menu,Submenu,MenuItemGroup,MenuItem,
+      Dropdown,DropdownMenu,DropdownItem} from  'element-ui';
 
 //从自己创建的./router文件下引入路由
 import router from './router'
@@ -27,6 +28,9 @@ Vue.use(Menu)
 Vue.use(Submenu)
 Vue.use(MenuItem)
 Vue.use(MenuItemGroup)
+Vue.use(Dropdown)
+Vue.use(DropdownMenu)
+Vue.use(DropdownItem)
 
 // Vue.use(Button);
 

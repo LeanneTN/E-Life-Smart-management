@@ -158,6 +158,7 @@ export default {
     color: #fff;
     text-align: center;
     line-height: 48px;
+    font-size: 100%;
   }
 }
 </style>
