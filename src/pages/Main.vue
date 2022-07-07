@@ -31,6 +31,10 @@ export default {
         return {
 
         }
+    },
+    //路由默认转到首页
+    mounted(){
+            this.$router.push({name:'Home'})
     }
 
 }

@@ -10,7 +10,7 @@
     :collapse="isCollapse"
   >
   <!-- 一级菜单 -->
-    <h3>E-life智能小区管理系统</h3>
+    <h3>{{title}}</h3>
     <el-menu-item @click="clickMenu(item)" v-for="item in noChildMenu" :index="item.url" :key="item.url">
       <i :class="item.icon"></i>
       <span slot="title">{{ item.label }}</span>
@@ -43,7 +43,7 @@
 export default {
   data() {
     return {
-      isCollapse: false, //默认展开多级菜单
+      // isCollapse: false, //默认展开多级菜单
       noChildMenu: [
         {
           label:'首页',
@@ -126,6 +126,14 @@ export default {
       ],
     };
   },
+  computed:{
+    isCollapse(){
+      return this.$store.state.tabs.isCollapse
+    },
+    title(){
+      return this.isCollapse ? 'E-life' : 'E-life智能小区管理系统'
+    }
+  },
   methods: {
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
@@ -159,6 +167,7 @@ export default {
     text-align: center;
     line-height: 48px;
     font-size: 100%;
+     white-space: nowrap;     //进制字体换行
   }
 }
 </style>
