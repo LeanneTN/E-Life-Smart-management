@@ -20,6 +20,7 @@ import LotManage from '../pages/ParkManage/LotManage'
 import HealthCard from '../pages/EpidemicManage/HealthCard'
 import AcidTest from '../pages/EpidemicManage/AcidTest'
 import AbnormalTravel from '../pages/EpidemicManage/AbnormalTravel'
+import Login from '@/pages/Login'
 
 
 //---------------------注意，此处必须写routes，不能写routers---------------------------
@@ -28,6 +29,7 @@ const routes = [
         path:'/',
         name:'Main',    
         component: Main,     //这一项来自上方页面的引入
+        redirect:'/Login',   //访问'/'界面时，默认跳转到登录页（后台管理系统无游客模式）
         children:[           //配置子路由
         {
             path:'/Home',
@@ -83,6 +85,11 @@ const routes = [
         }
         ]
      },
+     {
+        path:'/Login',
+        name:'Login',
+        component:Login
+     }
 ]
 
 const router = new VueRouter({

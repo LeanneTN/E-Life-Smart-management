@@ -5,8 +5,8 @@
                 <div class="userInfo">
                     <img :src="img"/>
                     <div class="user">
-                        <p class="name">{{user.name}}</p>
-                        <p class="access">{{user.access}}</p>
+                        <p class="name">{{loginAccount.userName}}</p>
+                        <p class="access">超级管理员</p>
                     </div>
                 </div>
                 <div>
@@ -17,7 +17,7 @@
         </el-col>
 
 
-        <el-col :span="10" style="margin-top: 20px">
+        <!-- <el-col :span="10" style="margin-top: 20px">
             <el-card shadow="hover">
                 <h1 >用于展示案例</h1>
                 <el-button type="primary" @click="getMsg">点击发送请求</el-button>
@@ -26,7 +26,7 @@
                                 Token：{{token}}
                         </p>
             </el-card>
-        </el-col>
+        </el-col> -->
     </el-row>
 </template>
 
@@ -38,39 +38,28 @@ export default{
     data(){
         return {
             img: require('../../assets/logo.png'),
-            user:{
-                name:'Admin',
-                access:'超级管理员'
-            }
         }
     },
-    computed:{
-        // token(){
-        //      return this.$store.state.user.token     //直接调用，获取
-        // },
+     computed:{
         ...mapState({
             token: state=>state.user.token,
             loginAccount: state=>state.user.loginAccount
         })
     },
+    //防止页面刷新，导致store数据丢失
+    created () {
+    // 在页面加载时读取sessionStorage
+    if (sessionStorage.getItem('store')) {
+      this.$store.replaceState(Object.assign({}, this.$store.state, JSON.parse(sessionStorage.getItem('store'))))
+    }
+    // 在页面刷新时将store保存到sessionStorage里
+    window.addEventListener('beforeunload', () => {
+      sessionStorage.setItem('store', JSON.stringify(this.$store.state))
+    })
+  },
     methods:{
-        changeToken(){
-             this.$store.dispatch('token',this.token+'1')          //修改store（仓库）内的数据
-        },
         async getMsg(){
-            /*         不带参数的请求
-            console.log('开始发送请求');
-            let res = reqCaptcha();
-            console.log('请求成功')
-            console.log((await res).data);
-            */
-           /*          带参数的请求
-            let userName = '张三';
-            let password = '123456';
-            let res = reqLoginByAccount(userName,password);
-            console.log((await res).data);
-            */
-
+            console.log(this.loginAccount)
         }
     }
 }

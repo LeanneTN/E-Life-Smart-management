@@ -2,7 +2,7 @@ import {reqLoginByAccount,reqGetLoginAccount} from '@/api'
 
 //User模块的store
 const state = {
-    token:'a',       //令牌
+    token:'',       //令牌
     loginAccount:null   //当前登录用户的信息，未登录则为null
 };
 
@@ -14,6 +14,9 @@ const mutations = {
     TOKEN(state,token){                 //使用方法：this.$store.commit('TOKEN',{token:'abc})
         state.token=token;
     }
+    // test(state,loginAccount){
+    //     state.loginAccount=loginAccount;
+    // }
 };
 
 const actions = {
