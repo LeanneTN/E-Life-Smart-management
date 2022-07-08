@@ -320,7 +320,7 @@ export default{
         //获取所有的用户信息
         async getByKeyWord(){
             let _this=this;
-            if(_this.headerForm.keyword == null){
+            if(!_this.headerForm.keyword ){
                 _this.$message({
                     type:"warning",
                     message:"请输入内容再查询"
@@ -331,20 +331,20 @@ export default{
             console.log(_this.headerForm.keyword)
             //开始查询：
             let tempArr=[];
-            let res = await reqGetAllUsers(_this.token);
-            if(res.code===200){             //此时请求成功
-                res.data.forEach(element => {
-                    console.log(element)
-                    if(element.name!=null){
-                    if(element.name.include(_this.headerForm.keyword)){
-                        element.sex === '1' ? element.sex='男' : element.sex='女';
-                        tempArr.push(element);
-                    }}
-                });
-                _this.config.total=tempArr.length;
-                _this.config.page=1;                //默认跳到第一页
-                _this.tableData = [..._this.getTenUsers(1,tempArr)];
-            }
+            // let res = await reqGetAllUsers(_this.token);
+            // if(res.code===200){             //此时请求成功
+            //     res.data.forEach(element => {
+            //         console.log(element)
+            //         if(element.name!=null){
+            //         if(element.name.include(_this.headerForm.keyword)){
+            //             element.sex === '1' ? element.sex='男' : element.sex='女';
+            //             tempArr.push(element);
+            //         }}
+            //     });
+            //     _this.config.total=tempArr.length;
+            //     _this.config.page=1;                //默认跳到第一页
+            //     _this.tableData = [..._this.getTenUsers(1,tempArr)];
+            // }
             
         }
 
