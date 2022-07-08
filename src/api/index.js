@@ -35,3 +35,27 @@ export const reqCaptcha = () => {
       method: 'get',
     })
   }
+
+  //退出登录
+  export const reqSignOut = (token) => {
+    return requests({
+      url: '/user/logout',
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+        token
+      },
+    })
+  }
+
+  //获取所有用户数据：
+  export const reqGetAllUsers = (token) => {
+    return requests({
+      url: '/user/user_info',
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+        token
+      },
+    })
+  }

@@ -3,7 +3,7 @@ import {reqLoginByAccount,reqGetLoginAccount} from '@/api'
 //User模块的store
 const state = {
     token:'',       //令牌
-    loginAccount:null   //当前登录用户的信息，未登录则为null
+    loginAccount:null,   //当前登录用户的信息，未登录则为null
 };
 
 // 用来唯一修改state中的值的方法

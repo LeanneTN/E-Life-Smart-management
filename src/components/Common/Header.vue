@@ -2,7 +2,7 @@
     <header>
         <div class="l-content">
             <el-button @click="handleMenu" icon="el-icon-menu" size="mini"></el-button>
-            <h3 style="color: #fff">首页</h3>
+            <h3 style="color: #fff">{{location}}</h3>
         </div>
         <div class="r-content">
             <el-dropdown trigger="click" size="mini">
@@ -10,8 +10,8 @@
                     <img class="user" :src="userImg">
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>个人中心</el-dropdown-item>
-                    <el-dropdown-item>退出登录</el-dropdown-item>
+                    <el-dropdown-item >个人中心</el-dropdown-item>
+                    <el-dropdown-item @click.native="layout()">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
         </div>
@@ -19,7 +19,8 @@
 </template>
 
 <script>
-
+import {reqSignOut} from '@/api/index'
+import {mapState} from 'vuex'
 export default{
     name:'Header',
     data(){
@@ -32,7 +33,22 @@ export default{
         handleMenu(){
             //用于调用Mutation
             this.$store.commit('changeCollapse')
+        },
+        //退出登录
+        async layout(){
+            let res = await reqSignOut(this.token);
+            if(res.code===200){
+                this.$router.push({
+                    name:'Login'
+                })
+            }
         }
+    },
+    computed:{
+        ...mapState({
+            token: state=>state.user.token,
+            location: state=>state.tabs.location
+        })
     }
 }
 

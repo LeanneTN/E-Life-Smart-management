@@ -10,11 +10,12 @@ Vue.use(VueRouter)
 
 //引入需要路由的页面：
 import Main from '../pages/Main.vue'
-import Home from '../pages/Home';
+import Home from '../pages/Home'
 import UserManage from '../pages/UserManage'
 import PayManage from '../pages/PayManage'
 import ForumManage from '../pages/ForumManage'
 import RepairManage from '../pages/RepairManage'
+import VolunteerManage from '../pages/VolunteerManage/index.vue'
 import CarManage from '../pages/ParkManage/CarManage'
 import LotManage from '../pages/ParkManage/LotManage'
 import HealthCard from '../pages/EpidemicManage/HealthCard'
@@ -55,6 +56,11 @@ const routes = [
             path:'/RepairManage',
             name:'RepairManage',
             component:RepairManage
+        },
+        {
+            path:'/VolunteerManage',
+            name:'VolunteerManage',
+            component:VolunteerManage
         },
         // 停车管理
         {

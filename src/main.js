@@ -7,7 +7,10 @@ import 'element-ui/lib/theme-chalk/index.css'
 import{Button,Input,Container,Aside,Header,Main,
        Menu,Submenu,MenuItemGroup,MenuItem,
       Dropdown,DropdownMenu,DropdownItem,
-      Row,Card,Col} from  'element-ui';
+      Row,Card,Col,Form,FormItem,
+      Select,Option,Switch,DatePicker,
+      Dialog,Table,TableColumn,Pagination,
+      MessageBox,Message} from  'element-ui';
 
 //从自己创建的./router文件下引入路由
 import router from './router'
@@ -39,6 +42,22 @@ Vue.use(DropdownItem)
 Vue.use(Row)
 Vue.use(Card)
 Vue.use(Col)
+Vue.use(Form)
+Vue.use(FormItem)
+Vue.use(Select)
+Vue.use(Option)
+Vue.use(Switch)
+Vue.use(DatePicker)
+Vue.use(Dialog)
+Vue.use(Table)
+Vue.use(TableColumn)
+Vue.use(Pagination)
+// Vue.use(MessageBox)              //一个巨坑，不要这样用
+Vue.use(MessageBox.name,MessageBox)
+Vue.use(Message.name,Message)
+
+Vue.prototype.$confirm = MessageBox.confirm
+Vue.prototype.$message = Message
 
 // Vue.use(Button);
 

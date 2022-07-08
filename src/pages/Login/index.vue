@@ -42,9 +42,6 @@ export default {
             code:''
         }
     },
-    mounted(){
-
-    },
     methods:{
         //获取验证码
         getVCode(){
@@ -55,9 +52,6 @@ export default {
             let res = await reqGetLoginAccount(token); //获取登录用户的信息
             if(res.code===200){
                 this.$store.commit('LOGINACCOUNT',res.data);
-                // console.log(res.data)
-                // console.log('仓库内的loginAccount：')
-                // console.log(this.$store.state.user.loginAccount);
                 this.$router.push({
                     name:'Home'
                 })

@@ -22,7 +22,7 @@
         <span slot="title">{{item.label}}</span>
       </template>
       <el-menu-item-group   v-for="cItem in item.child" :key="cItem.url">
-        <el-menu-item :index="cItem.url" @click="clickChild(cItem)">
+        <el-menu-item :index="cItem.url" @click="clickChild(item,cItem)">
           {{cItem.label}}
             <!-- {{cItem.label}} -->
         </el-menu-item>
@@ -40,10 +40,11 @@
 </style>
 
 <script>
+// import {mapState} from 'vuex'
+// import {saveStore} from '@/util'
 export default {
   data() {
     return {
-      // isCollapse: false, //默认展开多级菜单
       noChildMenu: [
         {
           label:'首页',
@@ -74,6 +75,12 @@ export default {
           name: "RepairManage",
           icon: "el-icon-key",
           url: "5",
+        },
+        {
+          label:'志愿者管理',
+          name: "VolunteerManage",
+          icon: "el-icon-s-check",
+          url: "6",
         },
       ],
       childMenu: [
@@ -133,6 +140,7 @@ export default {
     title(){
       return this.isCollapse ? 'E-life' : 'E-life智能小区管理系统'
     }
+
   },
   methods: {
     handleOpen(key, keyPath) {
@@ -145,13 +153,15 @@ export default {
     //防止连续点击
     let nowPath = window.location.href.substring(22);
     if(nowPath===item.name) return;
+    this.$store.commit('changeLocation',item.label)   //必须用同步，不能异步   
     this.$router.push({
       name:item.name
     })
    },
-   clickChild(item){
+   clickChild(item,cItem){
+    this.$store.commit('changeLocation',item.label+' / '+cItem.label)
     this.$router.push({
-      name:item.name
+      name:cItem.name
     })
    }
   },
