@@ -10,7 +10,7 @@ import{Button,Input,Container,Aside,Header,Main,
       Row,Card,Col,Form,FormItem,
       Select,Option,Switch,DatePicker,
       Dialog,Table,TableColumn,Pagination,
-      MessageBox,Message} from  'element-ui';
+      MessageBox,Message,Radio} from  'element-ui';
 
 //从自己创建的./router文件下引入路由
 import router from './router'
@@ -52,12 +52,14 @@ Vue.use(Dialog)
 Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(Pagination)
+Vue.use(Radio)
 // Vue.use(MessageBox)              //一个巨坑，不要这样用
 Vue.use(MessageBox.name,MessageBox)
 Vue.use(Message.name,Message)
 
 Vue.prototype.$confirm = MessageBox.confirm
 Vue.prototype.$message = Message
+
 
 // Vue.use(Button);
 
