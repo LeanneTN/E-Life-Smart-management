@@ -1,4 +1,10 @@
 const { defineConfig } = require('@vue/cli-service')
+const path = require('path-browserify')
+
+function resolve(dir) {
+  return path.join(__dirname, dir)
+}
+
 module.exports = defineConfig({
   transpileDependencies: true,
   lintOnSave: false,           //关闭双驼峰检查
@@ -14,6 +20,23 @@ module.exports = defineConfig({
           changeOrigin: true  //是否跨域
         },
     }
+  },
+
+  configureWebpack: {
+    resolve: {
+      alias: {
+        "@": resolve("src"),
+      },
+      fallback: {
+        path: require.resolve("path-browserify"),
+        stream: require.resolve("stream-browserify"),
+        http: require.resolve("stream-http"),
+        crypto: require.resolve("crypto-browserify"),
+        zlib: require.resolve("browserify-zlib"),
+        async: require.resolve("async_hooks"),
+        fs: false,
+      },     
+    },
   }
 })
 

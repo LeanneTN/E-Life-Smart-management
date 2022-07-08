@@ -87,7 +87,7 @@ export const reqDeleteUser = (token,id) => {
   })
 }
 
-//新增用户信息：                    ------------------
+//新增用户信息：               
 export const reqCreateUser = (token,user) => {
   return requests({
     url: '/user/new_user',
@@ -98,4 +98,16 @@ export const reqCreateUser = (token,user) => {
     },
     data:user //前端直接是一个类，此处也用类,不可加大括号
   })
+}
+
+// 获取车辆信息
+export const listCar = (query) => {
+    return requests({
+        url: '/parking/info',
+        method: 'get',
+        headers: {
+            'Content-Type': 'application/json',
+            query
+        }
+    })
 }
