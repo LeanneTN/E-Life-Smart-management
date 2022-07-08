@@ -62,8 +62,20 @@ export default {
         },
         //发送登录请求：
         async login(){
+            let _this=this;
             let res = await reqLoginByAccount(this.userName,this.password);
-            if(res.code !== 200) return ;
+            if(res.code !== 200){
+                // _this.$confirm("您的帐户或密码错误","登陆失败",
+                // {
+                //     confirmButtonText:"确认",
+                //     type:"error"
+                // })
+                this.$alert('您的账号或密码错误，请重新登录', '登陆失败', {
+                confirmButtonText: '确定',
+                type:"error"
+                });
+                return ;
+            } 
             this.$store.dispatch('token',res.data.token);
             // console.log(this.$store.state.user.token);
             this.getLoginAccount(res.data.token)

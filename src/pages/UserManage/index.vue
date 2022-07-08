@@ -45,7 +45,7 @@
 import {mapState} from 'vuex'
 import CommonForm from '@/components/Common/Form.vue'
 import CommonTable from '@/components/Common/Table.vue'
-import {reqGetAllUsers} from '@/api/index'
+import {reqGetAllUsers,reqUpdateUser,reqCreateUser,reqDeleteUser} from '@/api/index'
 export default{
     name:'UserManage',
     components:{
@@ -54,7 +54,7 @@ export default{
     },
     data(){
         return {
-            operateType:'add',          //判断对用户做出的操作
+            operateType:'edit',          //判断对用户做出的操作
             isShow:false,
             beforeFormLabel:[{
                 model:'id',
@@ -82,10 +82,10 @@ export default{
                 type:'select',
                 opts:[
                     {
-                        value:'female',
+                        value:'1',
                         label:'男'
                     },{
-                        value:'male',
+                        value:'0',
                         label:'女'
                     }
                     
@@ -126,14 +126,16 @@ export default{
             },
             headerFormLabel:[
                 {
+                    label:'姓名',
                     model:'keyword',
-                    name:'',             //因为搜索框前无名称，所以此处为空
+                    // name:'',             //因为搜索框前无名称，所以此处为空
                     type:'input'
                 }
             ],
             headerForm:{
                 keyword:''
             },
+            // allUsersData:[],           //用于存放所用户的数据
             tableData:[],              //和tableLabel的prop相对应，多一个，少一个没问题,
             tableLabel:[
                 {
@@ -179,8 +181,8 @@ export default{
                 }
             ],
             config:{
-                page:1,         //默认页码
-                total:30
+                page:1,         //当前选中页码，默认为1
+                total:null      //所有的页码
               }
         }
     },
@@ -189,9 +191,9 @@ export default{
         ...mapState({
             token: state=>state.user.token
         }),
-        //对表格信息进行加工：如果要新增用户，I删除ID属性
+        //对表格信息进行加工：如果要新增用户，删除ID属性
         formLabel(){
-            let temp = this.beforeFormLabel;
+            let temp = [...this.beforeFormLabel];
             if(this.operateType==='add'){
                 temp.forEach(element => {
                     element.label==='ID' ? temp.splice(0,1) : temp      
@@ -202,12 +204,46 @@ export default{
     },
     //生命周期函数：
     created(){
-       this.getAllUsers();
+       this.getAllUsers(1);
     },
     methods:{
-        confirm(){
-            this.isShow=false;
-            // console.log(this.operadeForm)
+        async confirm(){
+            let _this=this;
+            _this.isShow=false;
+            if(_this.operateType==='add'){          //此时新增一个用户
+                let res = await reqCreateUser(_this.token,_this.operadeForm)
+                 if(res.code===200){
+                _this.$message({
+                    type:"success",
+                    message:"修改成功"
+                })
+                _this.getAllUsers(_this.config.page)
+                return ;
+            }
+                //否则，修改失败：
+                _this.$message({
+                        type:"error",
+                        message:"失败"
+                    })
+            return ;
+            }
+            //此时编辑一个用户
+            let res = await reqUpdateUser(_this.token,_this.operadeForm)
+            if(res.code===200){
+                _this.$message({
+                    type:"success",
+                    message:"修改成功"
+                })
+                _this.getAllUsers(_this.config.page)
+                return ;
+            }
+            //否则，修改失败：
+             _this.$message({
+                    type:"error",
+                    message:"失败"
+                })
+            
+            
         },
         addUser(){
             this.isShow = true;
@@ -218,45 +254,97 @@ export default{
                 sex:''
             }
         },
-        //获取所有用户信息，并加载到表格内：
-        async getAllUsers(){
+        //获取所有10个用户的信息，并加载到表格内：
+        async getAllUsers(index){
             let _this=this;
             let res = await reqGetAllUsers(_this.token);
             if(res.code===200){             //此时请求成功
-                _this.tableData = [...res.data]
-                console.log(_this.tableData)
+                res.data.forEach(element => {
+                    element.sex === '1' ? element.sex='男' : element.sex='女'
+                });
+                _this.config.total=res.data.length;
+                _this.tableData = [..._this.getTenUsers(index,res.data)];
             }
+        },
+         //每次从请求到的所有数组中去除10个用户，提交给界面
+        getTenUsers(index,allUsers){
+            let _this = this;
+            //首先确认还有没有10页
+            if(index*10-1 > _this.config.total){ //此时不够10页了
+                return allUsers.splice((index-1)*10,_this.config.total-(index-1)*10);
+            }
+            //否则还有10页或者更多
+            return allUsers.splice((index-1)*10,10);
         },
         //在表格内搜索
         changePage(page){
-            console.log(page)
+            this.getAllUsers(page)
         },
         //编辑用户信息
         editUser(row){
-            // this.operadeForm=row;
             this.operadeForm=row;
+            this.operateType='edit'
             this.isShow=true;
         },
         //删除该用户
-        deleteUser(){
+         deleteUser(row){
+            let _this=this;
             //弹出提示框
-            this.$confirm("注意：此操作将永久删除该用户，是否继续？","提示",
+            _this.$confirm("注意：此操作将永久删除该用户，是否继续？","提示",
             {
                 confirmButtonText:"确认" ,
                 cancelIdleCallback:"取消",
                 type:"warning"
             }).then(()=>{
                 //此处说明点击了‘确认’，开始进行删除
-
-                //最后添加一个消息提示框：
-                this.$message({
-                    type:"success",
-                    message:"删除成功"
+                // let res =  reqDeleteUser(_this.token,row.id);
+                reqDeleteUser(_this.token,row.id).then(res=>{
+                    console.log(res);
+                    if(res.code === 200){
+                        _this.$message({
+                        type:"success",
+                        message:"删除成功"
+                        })
+                        _this.getAllUsers(_this.config.page)
+                        return 
+                    }
+                    _this.$message({
+                        type:"error",
+                        message:"删除失败"
+                    })
+                    return 
                 })
-            })
+                    
+                })
         },
         //获取所有的用户信息
-        getByKeyWord(){
+        async getByKeyWord(){
+            let _this=this;
+            if(_this.headerForm.keyword == null){
+                _this.$message({
+                    type:"warning",
+                    message:"请输入内容再查询"
+                })
+                return ;
+            }
+            console.log('关键字')
+            console.log(_this.headerForm.keyword)
+            //开始查询：
+            let tempArr=[];
+            let res = await reqGetAllUsers(_this.token);
+            if(res.code===200){             //此时请求成功
+                res.data.forEach(element => {
+                    console.log(element)
+                    if(element.name!=null){
+                    if(element.name.include(_this.headerForm.keyword)){
+                        element.sex === '1' ? element.sex='男' : element.sex='女';
+                        tempArr.push(element);
+                    }}
+                });
+                _this.config.total=tempArr.length;
+                _this.config.page=1;                //默认跳到第一页
+                _this.tableData = [..._this.getTenUsers(1,tempArr)];
+            }
             
         }
 

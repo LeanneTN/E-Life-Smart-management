@@ -56,8 +56,9 @@ Vue.use(Pagination)
 Vue.use(MessageBox.name,MessageBox)
 Vue.use(Message.name,Message)
 
-Vue.prototype.$confirm = MessageBox.confirm
-Vue.prototype.$message = Message
+Vue.prototype.$confirm = MessageBox.confirm       //双按钮的弹窗
+Vue.prototype.$alert = MessageBox.alert           //单按钮的弹窗
+Vue.prototype.$message = Message                  //小消息框
 
 // Vue.use(Button);
 

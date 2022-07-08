@@ -26,7 +26,7 @@
             :total="config.total"
             :current-page.sync="config.page"
             @current-change="changePage"
-            :page-size="20">
+            :page-size="10">
         </el-pagination>
     </div>
 </template>
@@ -49,7 +49,7 @@ export default ({
         cEdit(row){
             /*将当前行的数据向上传递给父组件（），
             也就是调用该表格的页面，父组件通过@editUser来绑定相应的事件*/
-            console.log(row)
+            // console.log(row)
             this.$emit('edit',row)    
         },
         cDelete(row){
