@@ -116,13 +116,13 @@ export default {
               url: "2_1",
             },
             {
-              label:'核酸检测',
+              label:'健康打卡信息',
               name: "AcidTest",
               icon: "el-icon-truck",
               url: "2_2",
             },
             {
-              label:"异常出行",
+              label:"核酸检测结果",
               name: "AbnormalTravel",
               icon: "el-icon-truck",
               url: "2_3",

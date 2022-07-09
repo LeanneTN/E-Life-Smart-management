@@ -157,10 +157,16 @@ export const reqGetAllHealthInfo= (token) => {
   })
 }
 
+
 //获取所有缴费信息：
 export const reqGetAllPayInfo= (token) => {
   return requests({
     url: '/payment/income',
+
+export const reqGetVolunteer= (token) => {
+  return requests({
+    url: '/volunteer/get_volunteer',
+
     method: 'get',
     headers: {
       'Content-Type': 'application/json',
@@ -168,6 +174,7 @@ export const reqGetAllPayInfo= (token) => {
     },
   })
 }
+
 
 //获取某个用户的支付信息：
 // export const reqGetUserPayInfo= (token) => {
@@ -221,3 +228,4 @@ export const reqUpdatePayment= (token,payment) => {
     data:payment
   })
 }
+

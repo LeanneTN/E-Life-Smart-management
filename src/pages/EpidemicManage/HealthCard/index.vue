@@ -43,7 +43,7 @@
 import { healthCheckSubmit } from '@/api/index';
 import { mapState } from 'vuex';
 export default {
-    name: "HealthCheck",
+    name: "HealthCard",
     data() {
         return {
             uid: "",
@@ -55,20 +55,20 @@ export default {
             labelPosition:"top"
         };
     },
-    methods:{
-      async onSubmit(){
-        let res = await healthCheckSubmit(this.uid, this.temp,
-        this.location, this.time, this.other_info, this.area_level, this.token)
-        console.log(res);
-        alert("打卡成功")
-      }
-    },
     computed:{
       ...mapState({
         token: state=>state.account.token
       })
-    }
-};
+    },
+    methods:{
+      async onSubmit(){
+        let res = await healthCheckSubmit(this.uid, this.temp,
+        this.location, this.time, this.other_info, this.area_level,)
+        console.log(res);
+        alert("打卡成功")
+      }
+    },}
+   
 </script>
 
 <style scoped lang='less'>
