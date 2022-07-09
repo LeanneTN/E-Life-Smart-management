@@ -162,6 +162,13 @@ export const reqGetAllHealthInfo= (token) => {
 export const reqGetAllPayInfo= (token) => {
   return requests({
     url: '/payment/income',
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+  })
+}
 
 export const reqGetVolunteer= (token) => {
   return requests({
