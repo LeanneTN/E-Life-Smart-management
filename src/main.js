@@ -1,6 +1,10 @@
 import Vue from 'vue'
 import App from './App.vue'
 
+//导入echarts
+import * as echarts from 'echarts'
+Vue.prototype.$echarts = echarts;
+
 /* 从全局导入elementUI组件
  import ElementUI from 'element-ui'*/
 import 'element-ui/lib/theme-chalk/index.css'
