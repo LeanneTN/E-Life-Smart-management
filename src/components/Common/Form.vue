@@ -3,8 +3,9 @@
     <el-form-item v-for="item in formLabel" :key="item.label" :label="item.label">
         <!-- 输入框 -->
         <el-input v-if="item.type === 'input'"
-        :placeholder="'请输入'+item.label"
-        v-model="form[item.model]">
+        :placeholder="item.label!=null ? '请输入'+item.label : '请输入'"
+        v-model="form[item.model]"
+        @blur="lostFocus">
         </el-input>
         <!-- 选择框 -->
         <el-switch v-if="item.type==='switch'" v-model="form[item.model]">
@@ -15,7 +16,7 @@
         v-model="form[item.model]">
         </el-date-picker>
         <el-select v-if="item.type==='select'"
-        placeholder="请选择"
+        :placeholder="item.spaceHolder ? item.spaceHolder : '请选择'"
         v-model="form[item.model]">
             <el-option v-for="item in item.opts"
                         :key="item.value"
@@ -41,6 +42,11 @@ export default ({
     data() {
         return {
             
+        }
+    },
+    methods: {
+        lostFocus(){
+            this.$emit('lostFocus')
         }
     },
 })

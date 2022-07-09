@@ -59,6 +59,7 @@ export const reqCaptcha = () => {
     })
   }
 
+
 //更新用户信息：
 export const reqUpdateUser = (token,user) => {
   return requests({
@@ -75,7 +76,7 @@ export const reqUpdateUser = (token,user) => {
 //删除用户                         ----------------
 export const reqDeleteUser = (token,id) => {
   return requests({
-    url: '/user/id',
+    url: '/user/delete_user',
     method: 'delete',
     headers: {
       'Content-Type': 'application/json',
@@ -101,6 +102,8 @@ export const reqCreateUser = (token,user) => {
 }
 
 // 获取车辆信息
+
+//获取车辆信息
 export const listCar = (query) => {
     return requests({
         url: '/parking/info',
@@ -110,4 +113,111 @@ export const listCar = (query) => {
             query
         }
     })
+}
+
+export const reqGetAllHealth= (token) => {
+  return requests({
+    url: '/health/info',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+  })
+}
+
+export const healthCheckSubmit = (uid, temp,
+  location, time,
+  other_info, area_level, token) => {
+  return requests({
+    url: '/health/submit',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+    data: {
+      uid,
+      temp,
+      location,
+      time,
+      other_info,
+      area_level
+    }
+  })
+}
+export const reqGetAllHealthInfo= (token) => {
+  return requests({
+    url: '/acid/get_acid',
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+  })
+}
+
+//获取所有缴费信息：
+export const reqGetAllPayInfo= (token) => {
+  return requests({
+    url: '/payment/income',
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+  })
+}
+
+//获取某个用户的支付信息：
+// export const reqGetUserPayInfo= (token) => {
+//   return requests({
+//     url: '/payment/income',
+//     method: 'get',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       token
+//     },
+//   })
+// }
+
+//新增订单
+export const reqCreatePayment= (token,payment) => {
+  return requests({
+    url: '/payment/',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+    data:payment
+  })
+}
+
+//删除订单：
+export const reqDeletePayment= (token,id) => {
+  return requests({
+    url: '/payment/',
+    method: 'delete',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+    params:{
+      id
+    }
+  })
+}
+
+//更新订单信息（注意：payment的id必定不为空）
+export const reqUpdatePayment= (token,payment) => {
+  return requests({
+    url: '/payment/',
+    method: 'put',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+    data:payment
+  })
 }

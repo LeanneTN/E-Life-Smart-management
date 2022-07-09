@@ -3,28 +3,31 @@ n<template>
         <h1>小区登记车辆管理</h1>
         <el-row :gutter="40">
             <el-form :inline="true" :model="formInline" class="demo-form-inline">
-                <el-col :span="2">
+                <!-- <el-col :span="2">
                     <el-form-item label="车主ID">
                         <p>车主ID:</p>
                     </el-form-item>
-                </el-col>
+                </el-col> -->
                 <el-col :span="4">
-                    <el-form-item label="车主ID">
+                    <!-- <el-form-item label="车主ID"> -->
+                    <el-form-item>
                         <el-input v-model="formInline.owner" placeholder="车主ID"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="2">
+                <!-- <el-col :span="2">
                     <el-form-item label="车牌号">
                         <p>车牌号:</p>
                     </el-form-item>
-                </el-col>
+                </el-col> -->
                 <el-col :span="4">
-                    <el-form-item label="车牌号">
+                    <!-- <el-form-item label="车牌号"> -->
+                    <el-form-item>
                         <el-input v-model="formInline.carid" placeholder="车牌号"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="3">
-                    <el-form-item label="车位">
+                    <!-- <el-form-item label="车位"> -->
+                    <el-form-item>
                         <p>是否有购买车位:</p>
                     </el-form-item>
                 </el-col>
@@ -86,7 +89,7 @@ n<template>
 // import { METHODS } from 'http'
 import { listCar } from '@/api/index'
 // import { response } from 'express';              ------无法使用--------
-import { mapState } from 'vuex'
+// import { mapState } from 'vuex'
 
 export default {
     name: "Car",

@@ -23,6 +23,7 @@
                 :formLabel="headerFormLabel"
                 :form="headerForm"
                 :inline="true"
+                @lostFocus="lostFocus"
                 ref="form"
                 >
                 <el-button type="primary" @click="getByKeyWord">搜索</el-button>
@@ -126,14 +127,50 @@ export default{
             },
             headerFormLabel:[
                 {
-                    label:'姓名',
+                    spaceHolder:'请选择搜索项',
+                    model:'selectItem',
+                    type:'select',
+                    opts:[
+                        {
+                            value:'id',
+                            label:'ID'
+                        },
+                        {
+                            value:'userName',
+                            label:'用户名'
+                        },
+                        {
+                            value:'name',
+                            label:'姓名'
+                        },
+                        {
+                            value:'sex',
+                            label:'性别'
+                        },
+                        {
+                            value:'buildingNumber',
+                            label:'楼栋号'
+                        },
+                        {
+                            value:'roomNumber',
+                            label:'房间号'
+                        },
+                        {
+                            value:'all',
+                            label:'所有人'
+                        }
+                    ]
+                },
+                {
+                    // label:'姓名',
                     model:'keyword',
-                    // name:'',             //因为搜索框前无名称，所以此处为空
+                    name:'',             //因为搜索框前无名称，所以此处为空
                     type:'input'
                 }
             ],
             headerForm:{
-                keyword:''
+                keyword:'',
+                selectItem:''
             },
             // allUsersData:[],           //用于存放所用户的数据
             tableData:[],              //和tableLabel的prop相对应，多一个，少一个没问题,
@@ -194,11 +231,11 @@ export default{
         //对表格信息进行加工：如果要新增用户，删除ID属性
         formLabel(){
             let temp = [...this.beforeFormLabel];
-            if(this.operateType==='add'){
+            // if(this.operateType==='add'){
                 temp.forEach(element => {
                     element.label==='ID' ? temp.splice(0,1) : temp      
             });
-            }
+            // }
             return temp;
         }
     },
@@ -320,32 +357,85 @@ export default{
         //获取所有的用户信息
         async getByKeyWord(){
             let _this=this;
-            if(!_this.headerForm.keyword ){
+            if(!_this.headerForm.selectItem ){
+                _this.$message({
+                    type:"warning",
+                    message:"请先选择搜索项"
+                })
+                return ;
+            }
+            if(!_this.headerForm.keyword && _this.headerForm.selectItem!=='all'){
                 _this.$message({
                     type:"warning",
                     message:"请输入内容再查询"
                 })
                 return ;
             }
-            console.log('关键字')
-            console.log(_this.headerForm.keyword)
+
             //开始查询：
+            console.log(_this.headerForm.selectItem)
             let tempArr=[];
-            // let res = await reqGetAllUsers(_this.token);
-            // if(res.code===200){             //此时请求成功
-            //     res.data.forEach(element => {
-            //         console.log(element)
-            //         if(element.name!=null){
-            //         if(element.name.include(_this.headerForm.keyword)){
-            //             element.sex === '1' ? element.sex='男' : element.sex='女';
-            //             tempArr.push(element);
-            //         }}
-            //     });
-            //     _this.config.total=tempArr.length;
-            //     _this.config.page=1;                //默认跳到第一页
-            //     _this.tableData = [..._this.getTenUsers(1,tempArr)];
-            // }
+            let res = await reqGetAllUsers(_this.token);
+            if(res.code===200){             //此时请求成功
+                res.data.forEach(element => {
+                    //根据用户选择的搜索项，进行搜索
+                    switch (_this.headerForm.selectItem){
+                        case  'id':
+                            if(element.id!=null){
+                                let temp = element.id+'';
+                            if(temp.indexOf(_this.headerForm.keyword+'')>=0){
+                                element.sex === '1' ? element.sex='男' : element.sex='女';
+                                tempArr.push(element);
+                            }}break;
+                        case  'userName':
+                            if(element.userName!=null){
+                            if(element.userName.indexOf(_this.headerForm.keyword)>=0){
+                                element.sex === '1' ? element.sex='男' : element.sex='女';
+                                tempArr.push(element);
+                            }}break;
+                        case  'name':
+                            if(element.name!=null){
+                            if(element.name.indexOf(_this.headerForm.keyword)>=0){
+                                element.sex === '1' ? element.sex='男' : element.sex='女';
+                                tempArr.push(element);
+                            }}break;
+                        case  'sex':
+                            if(element.sex!=null){
+                            element.sex === '1' ? element.sex='男' : element.sex='女';
+                            if(element.sex.indexOf(_this.headerForm.keyword)>=0){
+                                tempArr.push(element);
+                            }}break;
+                        case  'buildingNumber':
+                            if(element.buildingNumber!=null){
+                            if(element.buildingNumber.indexOf(_this.headerForm.keyword)>=0){
+                                element.sex === '1' ? element.sex='男' : element.sex='女';
+                                tempArr.push(element);
+                            }}break;
+                        case  'roomNumber':
+                            if(element.roomNumber!=null){
+                            if(element.roomNumber.indexOf(_this.headerForm.keyword)>=0){
+                                element.sex === '1' ? element.sex='男' : element.sex='女';
+                                tempArr.push(element);
+                            }}break;
+                        case  'all':
+                            _this.getAllUsers(1);
+                        default:    return ;
+                    }
+
+                });
+                _this.config.total=tempArr.length;
+                _this.config.page=1;                //默认跳到第一页
+                _this.tableData = [..._this.getTenUsers(1,tempArr)];
+            }
             
+        },
+        //搜索框焦点消失事件
+        async lostFocus(){
+            // let _this = this;
+            // if(_this.headerForm.keyword===null){
+            //     console.log('')
+            //     _this.getAllUsers(1)
+            // }
         }
 
     }
