@@ -72,3 +72,35 @@ export const listCar = (query) => {
     })
 }
 
+export const reqGetAllHealth= (token) => {
+  return requests({
+    url: '/health/info',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+  })
+}
+
+export const healthCheckSubmit = (uid, temp,
+  location, time,
+  other_info, area_level, token) => {
+  return requests({
+    url: '/health/submit',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+    data: {
+      uid,
+      temp,
+      location,
+      time,
+      other_info,
+      area_level
+    }
+  })
+}
+
