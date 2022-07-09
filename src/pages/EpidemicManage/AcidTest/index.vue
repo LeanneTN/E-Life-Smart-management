@@ -107,8 +107,8 @@ export default{
             headerFormLabel:[
                 {
                     model:'keyword',
-                    name:'',             //因为搜索框前无名称，所以此处为空
-                    type:'input'
+                    // name:'',             //因为搜索框前无名称，所以此处为空
+                    type:'select'
                 }
             ],
             headerForm:{
@@ -228,11 +228,35 @@ export default{
         },
         //获取所有的用户信息
         getByKeyWord(){
-            
-        }
+        //     let _this=this;
+        //     if(!_this.headerForm.keyword){
+        //         _this.$message({
+        //             type:"warning",
+        //             message:"请输入ID查询"
+        //         })
+        //         return ;
+        //     }
+        //     let tempArr=[];
+        //     let res = await reqGetAllHealth(_this.token);
+        //     if(res.code===200){             //此时请求成功
+        //         res.data.forEach(element => {
+        //             if(element.id!=null){
+        //                         let temp = element.id+'';
+        //                         if(temp.indexOf(_this.headerForm.keyword+'')>=0){
+        //                         element.sex === '1' ? element.sex='男' : element.sex='女';
+        //                         tempArr.push(element);
+        //                     }}
+        //         });
+        //          _this.config.total=tempArr.length;
+        //         _this.config.page=1;                //默认跳到第一页
+        //         _this.tableData = [..._this.getTenUsers(1,tempArr)];
 
-    }
+        // }
+
+    },
 }
+}
+
 
 </script>
 
