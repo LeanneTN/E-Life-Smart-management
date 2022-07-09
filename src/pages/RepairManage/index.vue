@@ -130,7 +130,7 @@ export default{
                 end:'',
                 description:'',
                 status:'',
-                repairID:'',
+                repairId:'',
                 address:'',
                 phone:' '
 
@@ -309,11 +309,13 @@ export default{
             if(res.code===200){             //此时请求成功
             console.log(res.data[4].status)
                 res.data.forEach(element => {
-                    element.time = element.time.split("T")[0]+' '+element.time.split("T")[1].split(".")[0]
-                    if(element.finishTime!=null){
-                    element.finishTime = element.finishTime.split("T")[0]+' '+element.finishTime.split("T")[1].split(".")[0]
+                    if(element.start!=null){
+                    element.start = element.start.split("T")[0]+' '+element.start.split("T")[1].split(".")[0]
                     }
-                    element.finishTime!=null ? element.status = '已完成' : element.status = '已报修'
+                    if(element.end!=null){
+                    element.end = element.end.split("T")[0]+' '+element.end.split("T")[1].split(".")[0]
+                    }
+                    element.end!=null ? element.status = '已完成' : element.status = '已报修'
 
                 });
                 _this.config.total=res.data.length;
@@ -397,22 +399,22 @@ export default{
                     case 'id':
                         if(element.id!=null){
                             if((element.id+'').indexOf(_this.headerForm.keyword+'')>=0){
-                                element.time = element.time.split("T")[0]+' '+element.time.split("T")[1].split(".")[0];
-                                if(element.finishTime!=null){
-                                element.finishTime = element.finishTime.split("T")[0]+' '+element.finishTime.split("T")[1].split(".")[0];
+                                element.start = element.start.split("T")[0]+' '+element.start.split("T")[1].split(".")[0];
+                                if(element.end!=null){
+                                element.end = element.end.split("T")[0]+' '+element.end.split("T")[1].split(".")[0];
                                 }
-                                element.finishTime!=null ? element.status = '已完成' : element.status = '已报修';
+                                element.end!=null ? element.status = '已完成' : element.status = '已报修';
                                 tempArr.push(element);
                             }
                         }break;
                     case 'fromUser':
                         if(element.fromUser!=null){
                             if((element.fromUser+'').indexOf(_this.headerForm.keyword+'')>=0){
-                                element.time = element.time.split("T")[0]+' '+element.time.split("T")[1].split(".")[0];
-                                if(element.finishTime!=null){
-                                element.finishTime = element.finishTime.split("T")[0]+' '+element.finishTime.split("T")[1].split(".")[0];
+                                element.start = element.start.split("T")[0]+' '+element.start.split("T")[1].split(".")[0];
+                                if(element.end!=null){
+                                element.end = element.end.split("T")[0]+' '+element.end.split("T")[1].split(".")[0];
                                 }
-                                element.finishTime!=null ? element.status = '已完成' : element.status = '已报修';
+                                element.end!=null ? element.status = '已完成' : element.status = '已报修';
                                 tempArr.push(element);
                             }
                         }break;
@@ -420,29 +422,29 @@ export default{
                     case 'type':
                         if(element.type!=null){
                             if(element.type.indexOf(_this.headerForm.keyword)>=0){
-                                element.time = element.time.split("T")[0]+' '+element.time.split("T")[1].split(".")[0];
-                                if(element.finishTime!=null){
-                                element.finishTime = element.finishTime.split("T")[0]+' '+element.finishTime.split("T")[1].split(".")[0];
+                                element.start = element.start.split("T")[0]+' '+element.start.split("T")[1].split(".")[0];
+                                if(element.end!=null){
+                                element.end = element.end.split("T")[0]+' '+element.end.split("T")[1].split(".")[0];
                                 }
-                                element.finishTime!=null ? element.status = '已完成' : element.status = '已报修';
+                                element.end!=null ? element.status = '已完成' : element.status = '已报修';
                                 tempArr.push(element);
                             }
                         }break;
                    
                     case 'status':
                         if(element.status!=null){
-                            if((!!element.finishTime && _this.headerForm.keyword === '已完成')||
-                            (!element.finishTime && _this.headerForm.keyword === '已报修')){
-                                element.time = element.time.split("T")[0]+' '+element.time.split("T")[1].split(".")[0];
-                                if(element.finishTime!=null){
-                                element.finishTime = element.finishTime.split("T")[0]+' '+element.finishTime.split("T")[1].split(".")[0];
+                            if((!!element.end && _this.headerForm.keyword === '已完成')||
+                            (!element.end && _this.headerForm.keyword === '已报修')){
+                                element.start = element.start.split("T")[0]+' '+element.start.split("T")[1].split(".")[0];
+                                if(element.end!=null){
+                                element.end = element.end.split("T")[0]+' '+element.end.split("T")[1].split(".")[0];
                                 }
-                                element.finishTime!=null ? element.status = '已完成' : element.status = '已报修';
+                                element.end!=null ? element.status = '已完成' : element.status = '已报修';
                                 tempArr.push(element);
                             }
                         }break;
                     
-                    default:
+                    default:'all'
                 }
                 });
                 _this.config.total=tempArr.length;
@@ -461,17 +463,17 @@ export default{
             //字符串转boolean
             !repair.status ? repair.status=false : repair.status = true ;
             //字符串转Date
-            // if(!repair.time){
-            //     repair.time=null
+            // if(!repair.start){
+            //     repair.start=null
             // } else{
-            //     repair.time = repair.time.replace(/-/,"/");
-            //     repair.time = new Date(repair.time)
+            //     repair.start = repair.start.replace(/-/,"/");
+            //     repair.start = new Date(repair.start)
             // } 
-            // if(!repair.finishTime){
-            //     repair.finishTime=null
+            // if(!repair.end){
+            //     repair.end=null
             // } else{
-            //     repair.finishTime = repair.finishTime.replace(/-/,"/");
-            //     repair.finishTime = new Date(repair.finishTime)
+            //     repair.end = repair.end.replace(/-/,"/");
+            //     repair.end = new Date(repair.end)
             // } 
 
             return repair;
