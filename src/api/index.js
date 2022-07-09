@@ -113,3 +113,14 @@ export const reqGetAllHealthInfo= (token) => {
     },
   })
 }
+
+export const reqGetVolunteer= (token) => {
+  return requests({
+    url: '/volunteer/get_volunteer',
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+  })
+}
