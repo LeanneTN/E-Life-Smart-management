@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { healthCheckSubmit } from '@/api';
+import { healthCheckSubmit } from '@/api/index';
 import { mapState } from 'vuex';
 export default {
     name: "HealthCheck",

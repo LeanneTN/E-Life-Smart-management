@@ -98,6 +98,7 @@ export default{
                 id:'',
                 uid:'',
                 temp:'',
+                time:'',
                 location:'',
                 other_info:'',
                 area_level:''
@@ -131,6 +132,11 @@ export default{
                 {
                     prop:"location",
                     label:"地点"
+                },
+                {
+                    prop:"time",
+                    label:"时间",
+                    width:250
                 },
                 {
                     prop:"other_info",

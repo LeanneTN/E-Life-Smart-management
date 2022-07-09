@@ -103,4 +103,13 @@ export const healthCheckSubmit = (uid, temp,
     }
   })
 }
-
+export const reqGetAllHealthInfo= (token) => {
+  return requests({
+    url: '/acid/get_acid',
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+  })
+}
