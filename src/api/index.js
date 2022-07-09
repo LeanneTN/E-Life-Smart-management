@@ -101,18 +101,150 @@ export const reqCreateUser = (token,user) => {
   })
 }
 
-// 获取车辆信息
-
 //获取车辆信息
-export const listCar = (query) => {
+export const reqGetAllCar = (token) => {
     return requests({
-        url: '/parking/info',
+        url: '/parking/info/car',
         method: 'get',
         headers: {
             'Content-Type': 'application/json',
-            query
+            token
         }
     })
+}
+
+//新增车辆信息
+export const reqCreateCar = (token, car) => {
+  return requests({
+      url: '/parking/car',
+      method: 'post',
+      headers: {
+          'Content-Type': 'application/json',
+          token
+      },
+      data: car
+  })
+}
+
+//更新车辆信息
+export const reqUpdateCar = (token, car) => {
+  return requests({
+      url: '/parking/car_info',
+      method: 'post',
+      headers: {
+          'Content-Type': 'application/json',
+          token
+      },
+      data: car
+  })
+}
+
+//删除车辆信息
+export const reqDeleteCar = (token, id) => {
+  return requests({
+      url: '/parking/delete_car',
+      method: 'delete',
+      headers: {
+          'Content-Type': 'application/json',
+          token
+      },
+      params:{
+        id
+      }
+  })
+}
+
+//获取停车位信息
+export const reqGetAllParkSpace = (token) => {
+  return requests({
+      url: '/parking/info/parking_space',
+      method: 'get',
+      headers: {
+          'Content-Type': 'application/json',
+          token
+      }
+  })
+}
+
+//新增停车位信息
+export const reqCreateParkSpace = (token, parkingspace) => {
+return requests({
+    url: '/parking/parking_space',
+    method: 'post',
+    headers: {
+        'Content-Type': 'application/json',
+        token
+    },
+    data: parkingspace
+})
+}
+
+//更新停车位信息
+export const reqUpdateParkSpace = (token, parkingspace) => {
+return requests({
+    url: '/parking/parking_space_info',
+    method: 'post',
+    headers: {
+        'Content-Type': 'application/json',
+        token
+    },
+    data: parkingspace
+})
+}
+
+//删除停车位信息
+export const reqDeleteParkSpace = (token, id) => {
+return requests({
+    url: '/parking/delete_parking_space',
+    method: 'delete',
+    headers: {
+        'Content-Type': 'application/json',
+        token
+    },
+    params:{
+      id
+    }
+})
+}
+
+//获取停车记录
+export const reqGetAllLog = (token) => {
+  return requests({
+      url: '/parking/log',
+      method: 'get',
+      headers: {
+          'Content-Type': 'application/json',
+          token
+      }
+  })
+}
+
+//更新停车记录信息
+export const reqUpdateLog = (token, parking) => {
+return requests({
+    url: '/parking/park_log',
+    method: 'post',
+    headers: {
+        'Content-Type': 'application/json',
+        token
+    },
+    data: parking
+})
+}
+
+//删除停车记录
+export const reqDeleteLog = (token, id) => {
+return requests({
+    url: '/parking/delete_park',
+    method: 'delete',
+    headers: {
+        'Content-Type': 'application/json',
+        token
+    },
+    params:{
+      id
+    }
+})
 }
 
 export const reqGetAllHealth= (token) => {

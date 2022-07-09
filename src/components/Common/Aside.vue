@@ -96,10 +96,16 @@ export default {
               url: "1_1",
             },
             {
-              label:"车位管理",
-              name: "LotManage",
+              label:'停车位管理',
+              name: "ParkSpaceManage",
               icon: "el-icon-truck",
               url: "1_2",
+            },
+            {
+              label:"停车记录管理",
+              name: "LotManage",
+              icon: "el-icon-truck",
+              url: "1_3",
             },
           ],
           url: "a",

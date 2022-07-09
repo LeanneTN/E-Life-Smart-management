@@ -17,6 +17,7 @@ import ForumManage from '../pages/ForumManage'
 import RepairManage from '../pages/RepairManage'
 import VolunteerManage from '../pages/VolunteerManage/index.vue'
 import CarManage from '../pages/ParkManage/CarManage'
+import ParkSpaceManage from '../pages/ParkManage/ParkSpaceManage'
 import LotManage from '../pages/ParkManage/LotManage'
 import HealthCard from '../pages/EpidemicManage/HealthCard'
 import AcidTest from '../pages/EpidemicManage/AcidTest'
@@ -67,6 +68,11 @@ const routes = [
             path:'/ParkManage/CarManage',
             name:'CarManage',
             component:CarManage
+        },
+        {
+            path:'/ParkManage/ParkSpaceManage',
+            name:'ParkSpaceManage',
+            component:ParkSpaceManage
         },
         {
             path:'/ParkManage/LotManage',

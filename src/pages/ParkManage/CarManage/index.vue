@@ -1,188 +1,292 @@
-n<template>
-    <div class="app-container">
-        <h1>小区登记车辆管理</h1>
-        <el-row :gutter="40">
-            <el-form :inline="true" :model="formInline" class="demo-form-inline">
-                <!-- <el-col :span="2">
-                    <el-form-item label="车主ID">
-                        <p>车主ID:</p>
-                    </el-form-item>
-                </el-col> -->
-                <el-col :span="4">
-                    <!-- <el-form-item label="车主ID"> -->
-                    <el-form-item>
-                        <el-input v-model="formInline.owner" placeholder="车主ID"></el-input>
-                    </el-form-item>
-                </el-col>
-                <!-- <el-col :span="2">
-                    <el-form-item label="车牌号">
-                        <p>车牌号:</p>
-                    </el-form-item>
-                </el-col> -->
-                <el-col :span="4">
-                    <!-- <el-form-item label="车牌号"> -->
-                    <el-form-item>
-                        <el-input v-model="formInline.carid" placeholder="车牌号"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="3">
-                    <!-- <el-form-item label="车位"> -->
-                    <el-form-item>
-                        <p>是否有购买车位:</p>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="4">
-                    <el-radio v-model="formInline.radio" label="1">是</el-radio>
-                    <el-radio v-model="formInline.radio" label="2">否</el-radio>
-                </el-col>
+<template>
+    <div class="CarManage">
+        <!-- 弹出窗口 -->
+        <el-dialog :title="operateType === 'add' ? '新增用户' : '修改信息'" :visible.sync="isShow">
+            <common-form :formLabel="formLabel" :form="operadeForm" :inline="true" ref="form">
+            </common-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="isShow = false">取消</el-button>
+                <el-button @click="confirm" type="primary">确定</el-button>
+            </div>
+        </el-dialog>
+        <!-- 顶部操作窗口 -->
+        <div class="manage-header">
 
-                <el-col :span="2">
-                    <el-form-item>
-                        <el-button type="primary" @click="handleQuery" icon="el-icon-search">查询</el-button>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="2">
-                    <el-form-item>
-                        <el-button @click="resetQuery" icon="el-icon-refresh">重置</el-button>
-                    </el-form-item>
-                </el-col>
-
-            </el-form>
-        </el-row>
-        <el-row :gutter="10" class="mb8">
-            <el-col :span="1.5">
-                <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
-            </el-col>
-            <el-col :span="1.5">
-                <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate">修改</el-button>
-            </el-col>
-            <el-col :span="1.5">
-                <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete">删除</el-button>
-            </el-col>
-            <el-col :span="1.5">
-                <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
-            </el-col>
-            <!-- <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
-        </el-row>
-
-        <!--信息显示列表-->
-        <el-table v-loading="loading" :data="carlist" @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="55" align="center"/>
-            <el-table-column lable="车牌号" prop="carid" width="120" />
-            <el-table-column lable="车主ID" prop="owner" width="120" />
-            <el-table-column lable="车主姓名" prop="owner_name" width="120" />
-            <el-table-column lable="是否有购买停车位" prop="ispark" width="120" />
-            <el-table-column lable="停车位编码" prop="parking_num" width="120" />
-            <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-                <template slot-scope="scope">
-                    <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
-                    <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)">修改</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
-
-        <pagination v-show="total>0" :total="total" :page.sync="formInline.pageNum" :limit.sync="formInline.pageSize" @pagination="getList" />
+            <el-button type="primary" @click="addCar">+ 新增</el-button>
+            <common-form :formLabel="headerFormLabel" :form="headerForm" :inline="true" @lostFocus="lostFocus"
+                ref="form">
+                <el-button type="primary" @click="getByKeyWord">搜索</el-button>
+            </common-form>
+        </div>
+        <!-- 引入自定义的table组件 -->
+        <common-table :tableData="tableData" :tableLabel="tableLabel" :config="config" @changePage="changePage"
+            @edit="editCar" @delete="deleteCar">
+        </common-table>
     </div>
 </template>
 
 <script>
-// import { METHODS } from 'http'
-import { listCar } from '@/api/index'
-// import { response } from 'express';              ------无法使用--------
-// import { mapState } from 'vuex'
-
+import { mapState } from 'vuex'
+import CommonForm from '@/components/Common/Form.vue'
+import CommonTable from '@/components/Common/Table.vue'
+import { reqGetAllCar, reqUpdateCar, reqCreateCar, reqDeleteCar } from '@/api/index'
 export default {
-    name: "Car",
+    name: 'CarManage',
+    components: {
+        CommonForm,
+        CommonTable
+    },
     data() {
         return {
-            //遮罩层
-            loading: true,
-            // 非单个禁用
-            single: true,
-            // 非多个禁用
-            multiple: true,
-            // //显示搜索条件
-            // showSearch: true,
-            //总条数
-            total: 0,
-            //车辆表格数据
-            carlist: [],
-            //查询参数
-            formInline: {
-                // pageNum: 1,
-                // pageSize: 10,
-                owner: undefined,
-                carid: undefined,
-                radio: '1'
+            operateType: 'edit',          //判断对用户做出的操作
+            isShow: false,
+            beforeFormLabel: [{
+                model: 'id',
+                label: '车牌号',
+                type: 'input'
+            },
+            {
+                model: 'owner',
+                label: '车主ID',
+                type: 'input'
+            }
+            ],
+            operadeForm: {
+                id: '',
+                owner: ''
+            },
+            headerFormLabel: [
+                {
+                    spaceHolder: '请选择搜索项',
+                    model: 'selectItem',
+                    type: 'select',
+                    opts: [
+                        {
+                            value: 'id',
+                            label: '车牌号'
+                        },
+                        {
+                            value: 'owner',
+                            label: '车主ID'
+                        },
+                        {
+                            value: 'all',
+                            label: '所有停车位'
+                        }
+                    ]
+                },
+                {
+                    model: 'keyword',
+                    name: '',             //因为搜索框前无名称，所以此处为空
+                    type: 'input'
+                }
+            ],
+            headerForm: {
+                keyword: '',
+                selectItem: ''
+            },
+            tableData: [],              //和tableLabel的prop相对应，多一个，少一个没问题,
+            tableLabel: [
+                {
+                    prop: "id",
+                    label: "车牌号",
+                    width: 200
+                },
+                {
+                    prop: "owner",
+                    label: "车主ID",
+                    width: 200
+                }
+            ],
+            config: {
+                page: 1,         //默认页码
+                total: null
             }
         }
     },
+    computed: {
+        //获取token：
+        ...mapState({
+            token: state => state.user.token
+        }),
+        //对表格信息进行加工：如果要新增用户，I删除ID属性
+        formLabel() {
+            let temp = [...this.beforeFormLabel];
+            // if(this.operateType==='add'){
+            temp.forEach(element => {
+                element.label === 'ID' ? temp.splice(0, 1) : temp
+            });
+            //}
+            return temp;
+        }
+    },
+    //生命周期函数：
     created() {
-        this.getList();
+        this.getAllCar(1);
     },
     methods: {
-        //得到车辆列表
-        getList() {
-            this.loading = true;
-            listCar(this.formInline).then(response => {
-                this.carlist = response.rows;
-                this.total = response.total;
-                this.loading = false;
-            });
+        async confirm() {
+            let _this = this;
+            _this.isShow = false;
+            if (_this.operateType === 'add') {          //此时新增一个用户
+                let res = await reqCreateCar(_this.token, _this.operadeForm)
+                if (res.code === 200) {
+                    _this.$message({
+                        type: "success",
+                        message: "修改成功"
+                    })
+                    _this.getAllCar(_this.config.page)
+                    return;
+                }
+                //否则，修改失败：
+                _this.$message({
+                    type: "error",
+                    message: "失败"
+                })
+                return;
+            }
+            //此时编辑一个用户
+            let res = await reqUpdateCar(_this.token, _this.operadeForm)
+            if (res.code === 200) {
+                _this.$message({
+                    type: "success",
+                    message: "修改成功"
+                })
+                _this.getAllCar(_this.config.page)
+                return;
+            }
+            //否则，修改失败：
+            _this.$message({
+                type: "error",
+                message: "失败"
+            })
         },
-        //查询按钮
-        handleQuery() {
-            console.log('submit!');
+        addParkSpace() {
+            this.isShow = true;
+            this.operateType = 'add';
+            this.operadeForm = {
+                id: '',
+                owner: ''
+            }
         },
-        //重置按钮
-        resetQuery() {
-            console.log('reset');
+        //获取所有10个停车位信息，并加载到表格内：
+        async getAllCar(index) {
+            let _this = this;
+            let res = await reqGetAllCar(_this.token);
+            if (res.code === 200) {             //此时请求成功
+                _this.config.total = res.data.length;
+                _this.tableData = [..._this.getTenCar(index, res.data)];
+            }
         },
-        //新增
-        handleAdd() {
-            console.log('handleAdd');
+        //每次从请求到的所有数组中去除10个停车位，提交给界面
+        getTenCar(index, allCar) {
+            let _this = this;
+            if (index * 10 - 1 > _this.config.total) {
+                return allCar.splice((index - 1) * 10, _this.config.total - (index - 1) * 10);
+            }
+            return allCar.splice((index - 1) * 10, 10);
         },
-        //修改
-        handleUpdate() {
-            console.log('handleUpdate');
+        //在表格内搜索
+        changePage(page) {
+            this.getAllCar(page)
         },
-        //删除
-        handleDelete() {
-            console.log('handleDelete');
+        //编辑用户信息
+        editCar(row) {
+            this.operadeForm = row;
+            this.operateType = 'edit'
+            this.isShow = true;
         },
-        //导出
-        handleExport() {
-            console.log('handleExport');
+        //删除该用户
+        deleteCar(row) {
+            let _this = this;
+            //弹出提示框
+            _this.$confirm("注意：此操作将永久删除该登记车辆，是否继续？", "提示",
+                {
+                    confirmButtonText: "确认",
+                    cancelIdleCallback: "取消",
+                    type: "warning"
+                }).then(() => {
+                    //此处说明点击了‘确认’，开始进行删除
+                    // let res =  reqDeleteUser(_this.token,row.id);
+                    reqDeleteCar(_this.token, row.id).then(res => {
+                        console.log(res);
+                        if (res.code === 200) {
+                            _this.$message({
+                                type: "success",
+                                message: "删除成功"
+                            })
+                            _this.getAllCar(_this.config.page)
+                            return
+                        }
+                        _this.$message({
+                            type: "error",
+                            message: "删除失败"
+                        })
+                        return
+                    })
+                })
+        },
+        //获取所有的用户信息
+        async getByKeyWord() {
+            let _this=this;
+            if(!_this.headerForm.selectItem ){
+                _this.$message({
+                    type:"warning",
+                    message:"请先选择搜索项"
+                })
+                return ;
+            }
+            if(!_this.headerForm.keyword && _this.headerForm.selectItem!=='all'){
+                _this.$message({
+                    type:"warning",
+                    message:"请输入内容再查询"
+                })
+                return ;
+            }
+            //开始查询
+            console.log(_this.headerForm.selectItem)
+            let tempArr=[];
+            let res = await reqGetAllCar(_this.token);
+            if(res.code===200){
+                res.data.forEach(element => {
+                    switch(_this.headerForm.selectItem){
+                        case 'id':
+                            if(element.id!=null){
+                                let temp = element.id+'';
+                                if(temp.indexOf(_this.headerForm.keyword+'')>=0){
+                                    tempArr.push(element);
+                                }
+                            }break;
+                        case 'owner':
+                            if(element.owner!=null){
+                                let temp = element.owner+'';
+                                if(temp.indexOf(_this.headerForm.keyword+'')>=0){
+                                    tempArr.push(element);
+                                }
+                            }break;
+                        case 'all':
+                            _this.getAllCar(1);
+                        default: return;
+                    }
+                });
+                _this.config.total=tempArr.length;
+                _this.config.page=1;                //默认跳到第一页
+                _this.tableData = [..._this.getTenCar(1,tempArr)];
+            }
+        },
+        async lostFocus(){
+            
         }
     }
 }
 
 </script>
 
-<style>
-.el-row {
-    margin-bottom: 20px;
-    /* &:last-child {
-      margin-bottom: 0;
-    } */
+<style lang="less" scoped>
+.manage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 20px;
 }
-
-.el-col {
-    border-radius: 4px;
-}
-
-.grid-content {
-    border-radius: 4px;
-    min-height: 36px;
-}
-
-.row-bg {
-    padding: 10px 0;
-    background-color: #f9fafc;
-}
-
-.el-radio {
-    padding: 20px 0;
-}
-
 </style>

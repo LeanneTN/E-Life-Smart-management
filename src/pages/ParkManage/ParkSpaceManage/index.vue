@@ -1,5 +1,5 @@
 <template>
-    <div class="LogManage">
+    <div class="ParkSpaceManage">
         <!-- 弹出窗口 -->
         <el-dialog :title="operateType === 'add' ? '新增用户' : '修改信息'" :visible.sync="isShow">
             <common-form :formLabel="formLabel" :form="operadeForm" :inline="true" ref="form">
@@ -12,7 +12,7 @@
         <!-- 顶部操作窗口 -->
         <div class="manage-header">
 
-            <!-- <el-button type="primary" @click="addLog">+ 新增</el-button> -->
+            <el-button type="primary" @click="addParkSpace">+ 新增</el-button>
             <common-form :formLabel="headerFormLabel" :form="headerForm" :inline="true" @lostFocus="lostFocus"
                 ref="form">
                 <el-button type="primary" @click="getByKeyWord">搜索</el-button>
@@ -20,7 +20,7 @@
         </div>
         <!-- 引入自定义的table组件 -->
         <common-table :tableData="tableData" :tableLabel="tableLabel" :config="config" @changePage="changePage"
-            @edit="editLog" @delete="deleteLog">
+            @edit="editParkSpace" @delete="deleteParkSpace">
         </common-table>
     </div>
 </template>
@@ -29,9 +29,9 @@
 import { mapState } from 'vuex'
 import CommonForm from '@/components/Common/Form.vue'
 import CommonTable from '@/components/Common/Table.vue'
-import { reqGetAllLog, reqUpdateLog, reqDeleteLog } from '@/api/index'
+import { reqGetAllParkSpace, reqUpdateParkSpace, reqCreateParkSpace, reqDeleteParkSpace } from '@/api/index'
 export default {
-    name: 'LogManage',
+    name: 'ParkSpaceManage',
     components: {
         CommonForm,
         CommonTable
@@ -42,48 +42,24 @@ export default {
             isShow: false,
             beforeFormLabel: [{
                 model: 'id',
-                label: '序号',
+                label: '停车位编码',
                 type: 'input'
             },
             {
-                model: 'carNum',
-                label: '车牌号',
+                model: 'car_num',
+                label: '停放的车辆车牌',
                 type: 'input'
             },
             {
-                model: 'isRegistered',
-                label: '是否有购买长期停车位',
-                type: 'input'
-            },
-            {
-                model: 'parkingNum',
-                label: '停车位编号',
-                type: 'input'
-            },
-            {
-                model: 'start',
-                label: '开始时间',
-                type: 'input'
-            },
-            {
-                model: 'end',
-                label: '结束时间',
-                type: 'input'
-            },
-            {
-                model: 'totalPrice',
-                label: '停车费',
+                model: 'type',
+                label: '停车位区域编码',
                 type: 'input'
             },
             ],
             operadeForm: {
                 id: '',
-                carNum: '',
-                isRegistered: '',
-                parkingNum: '',
-                start: '',
-                end: '',
-                totalPrice: '',
+                car_num: '',
+                type: '',
             },
             headerFormLabel: [
                 {
@@ -92,12 +68,16 @@ export default {
                     type: 'select',
                     opts: [
                         {
-                            value: 'carNum',
-                            label: '车牌号'
+                            value: 'id',
+                            label: '停车位编码'
                         },
                         {
-                            value: 'parkingNum',
-                            label: '停车位编码'
+                            value: 'car_num',
+                            label: '停放的车辆车牌'
+                        },
+                        {
+                            value: 'type',
+                            label: '停车位区域编码'
                         },
                         {
                             value: 'all',
@@ -119,38 +99,18 @@ export default {
             tableLabel: [
                 {
                     prop: "id",
-                    label: "序号",
-                    width: 80
-                },
-                {
-                    prop: "carNum",
-                    label: "车牌号",
-                    width: 100
-                },
-                {
-                    prop: "isRegistered",
-                    label: "是否有购买长期停车位",
-                    width: 100
-                },
-                {
-                    prop: "parkingNum",
-                    label: "停车位编号",
-                    width: 100
-                },
-                {
-                    prop: "start",
-                    label: "开始时间",
+                    label: "停车位编码",
                     width: 200
                 },
                 {
-                    prop: "end",
-                    label: "结束时间",
+                    prop: "car_num",
+                    label: "停放的车辆车牌",
                     width: 200
                 },
                 {
-                    prop: "totalPrice",
-                    label: "停车费",
-                    width: 100
+                    prop: "type",
+                    label: "停车位区域编码",
+                    width: 200
                 }
             ],
             config: {
@@ -177,37 +137,37 @@ export default {
     },
     //生命周期函数：
     created() {
-        this.getAllLog(1);
+        this.getAllParkSpace(1);
     },
     methods: {
         async confirm() {
             let _this = this;
             _this.isShow = false;
             if (_this.operateType === 'add') {          //此时新增一个用户
-                // let res = await reqCreateParkSpace(_this.token, _this.operadeForm)
-                // if (res.code === 200) {
-                //     _this.$message({
-                //         type: "success",
-                //         message: "修改成功"
-                //     })
-                //     _this.getAllParkSpace(_this.config.page)
-                //     return;
-                // }
-                // //否则，修改失败：
-                // _this.$message({
-                //     type: "error",
-                //     message: "失败"
-                // })
-                // return;
+                let res = await reqCreateParkSpace(_this.token, _this.operadeForm)
+                if (res.code === 200) {
+                    _this.$message({
+                        type: "success",
+                        message: "修改成功"
+                    })
+                    _this.getAllParkSpace(_this.config.page)
+                    return;
+                }
+                //否则，修改失败：
+                _this.$message({
+                    type: "error",
+                    message: "失败"
+                })
+                return;
             }
             //此时编辑一个用户
-            let res = await reqUpdateLog(_this.token, _this.operadeForm)
+            let res = await reqUpdateParkSpace(_this.token, _this.operadeForm)
             if (res.code === 200) {
                 _this.$message({
                     type: "success",
                     message: "修改成功"
                 })
-                _this.getAllLog(_this.config.page)
+                _this.getAllParkSpace(_this.config.page)
                 return;
             }
             //否则，修改失败：
@@ -216,44 +176,44 @@ export default {
                 message: "失败"
             })
         },
-        // addParkSpace() {
-        //     this.isShow = true;
-        //     this.operateType = 'add';
-        //     this.operadeForm = {
-        //         id: '',
-        //         car_num: '',
-        //         type: ''
-        //     }
-        // },
+        addParkSpace() {
+            this.isShow = true;
+            this.operateType = 'add';
+            this.operadeForm = {
+                id: '',
+                car_num: '',
+                type: ''
+            }
+        },
         //获取所有10个停车位信息，并加载到表格内：
-        async getAllLog(index) {
+        async getAllParkSpace(index) {
             let _this = this;
-            let res = await reqGetAllLog(_this.token);
+            let res = await reqGetAllParkSpace(_this.token);
             if (res.code === 200) {             //此时请求成功
                 _this.config.total = res.data.length;
-                _this.tableData = [..._this.getTenLog(index, res.data)];
+                _this.tableData = [..._this.getTenParkSpace(index, res.data)];
             }
         },
         //每次从请求到的所有数组中去除10个停车位，提交给界面
-        getTenLog(index, allLog) {
+        getTenParkSpace(index, allParkSpace) {
             let _this = this;
             if (index * 10 - 1 > _this.config.total) {
-                return allLog.splice((index - 1) * 10, _this.config.total - (index - 1) * 10);
+                return allParkSpace.splice((index - 1) * 10, _this.config.total - (index - 1) * 10);
             }
-            return allLog.splice((index - 1) * 10, 10);
+            return allParkSpace.splice((index - 1) * 10, 10);
         },
         //在表格内搜索
         changePage(page) {
-            this.getAllLog(page)
+            this.getAllParkSpace(page)
         },
         //编辑用户信息
-        editLog(row) {
+        editParkSpace(row) {
             this.operadeForm = row;
             this.operateType = 'edit'
             this.isShow = true;
         },
         //删除该用户
-        deleteLog(row) {
+        deleteParkSpace(row) {
             let _this = this;
             //弹出提示框
             _this.$confirm("注意：此操作将永久删除该停车位，是否继续？", "提示",
@@ -264,14 +224,14 @@ export default {
                 }).then(() => {
                     //此处说明点击了‘确认’，开始进行删除
                     // let res =  reqDeleteUser(_this.token,row.id);
-                    reqDeleteLog(_this.token, row.id).then(res => {
+                    reqDeleteParkSpace(_this.token, row.id).then(res => {
                         console.log(res);
                         if (res.code === 200) {
                             _this.$message({
                                 type: "success",
                                 message: "删除成功"
                             })
-                            _this.getAllLog(_this.config.page)
+                            _this.getAllParkSpace(_this.config.page)
                             return
                         }
                         _this.$message({
@@ -302,34 +262,39 @@ export default {
             //开始查询
             console.log(_this.headerForm.selectItem)
             let tempArr=[];
-            let res = await reqGetAllLog(_this.token);
+            let res = await reqGetAllParkSpace(_this.token);
             if(res.code===200){
                 res.data.forEach(element => {
                     switch(_this.headerForm.selectItem){
-                        case 'carNum':
-                            if(element.carNum!=null){
-                                let temp = element.carNum+'';
+                        case 'id':
+                            if(element.id!=null){
+                                let temp = element.id+'';
                                 if(temp.indexOf(_this.headerForm.keyword+'')>=0){
-                                    element.isRegistered = '1' ? element.isRegistered='否' : element.isRegistered='是'
                                     tempArr.push(element);
                                 }
                             }break;
-                        case 'parkingNum':
-                            if(element.parkingNum!=null){
-                                let temp = element.parkingNum+'';
+                        case 'car_num':
+                            if(element.car_num!=null){
+                                let temp = element.car_num+'';
                                 if(temp.indexOf(_this.headerForm.keyword+'')>=0){
-                                    element.isRegistered = '1' ? element.isRegistered='否' : element.isRegistered='是'
+                                    tempArr.push(element);
+                                }
+                            }break;
+                        case 'type':
+                            if(element.type!=null){
+                                let temp = element.type+'';
+                                if(temp.indexOf(_this.headerForm.keyword+'')>=0){
                                     tempArr.push(element);
                                 }
                             }break;
                         case 'all':
-                            _this.getAllLog(1);
+                            _this.getAllParkSpace(1);
                         default: return;
                     }
                 });
                 _this.config.total=tempArr.length;
                 _this.config.page=1;                //默认跳到第一页
-                _this.tableData = [..._this.getTenLog(1,tempArr)];
+                _this.tableData = [..._this.getTenParkSpace(1,tempArr)];
             }
         },
         async lostFocus(){
