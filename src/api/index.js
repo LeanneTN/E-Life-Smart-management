@@ -60,7 +60,7 @@ export const reqCaptcha = () => {
     })
   }
 
-获取车辆信息
+//获取车辆信息
 export const listCar = (query) => {
     return requests({
         url: '/parking/info',
