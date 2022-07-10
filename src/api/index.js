@@ -380,6 +380,40 @@ export const reqGetAllTopic = (token) => {
   })
 }
 
+export const reqCreateRepair= (token,repair) => {
+  return requests({
+    url: '/repair/',
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+    data:repair
+  })
+}
+export const reqUpdateRepair= (token,repairinfo) => {
+  return requests({
+    url: '/repair/',
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+    data:repairinfo
+  })
+}
+export const reqGetAllRepairInfo= (token) => {
+  return requests({
+    url: '/repair/logs',
+
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+  })
+}
+
 //新增话题
 export const reqCreateTopic = (token, topic) => {
   return requests({
@@ -473,3 +507,4 @@ export const reqDeleteComment = (token, id) => {
     }
   })
 }
+
