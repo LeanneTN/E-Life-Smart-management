@@ -13,7 +13,9 @@ import Main from '../pages/Main.vue'
 import Home from '../pages/Home'
 import UserManage from '../pages/UserManage'
 import PayManage from '../pages/PayManage'
-import ForumManage from '../pages/ForumManage'
+// import ForumManage from '../pages/ForumManage'
+import TopicManage from '../pages/ForumManage/TopicManage'
+import CommentManage from '../pages/ForumManage/CommentManage'
 import RepairManage from '../pages/RepairManage'
 import VolunteerManage from '../pages/VolunteerManage/index.vue'
 import CarManage from '../pages/ParkManage/CarManage'
@@ -48,10 +50,16 @@ const routes = [
             name:'PayManage',
             component:PayManage
         },
+        //论坛管理
         {
-            path:'/ForumManage',
-            name:'ForumManage',
-            component:ForumManage
+            path:'/ForumManage/TopicManage',
+            name:'TopicManage',
+            component:TopicManage
+        },
+        {
+            path:'/ForumManage/CommentManage',
+            name:'CommentManage',
+            component:CommentManage
         },
         {
             path:'/RepairManage',

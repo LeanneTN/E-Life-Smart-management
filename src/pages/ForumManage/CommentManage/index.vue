@@ -1,5 +1,5 @@
 <template>
-    <div class="LogManage">
+    <div class="CommentManage">
         <!-- 弹出窗口 -->
         <el-dialog :title="operateType === 'add' ? '新增用户' : '修改信息'" :visible.sync="isShow">
             <common-form :formLabel="formLabel" :form="operadeForm" :inline="true" ref="form">
@@ -20,7 +20,7 @@
         </div>
         <!-- 引入自定义的table组件 -->
         <common-table :tableData="tableData" :tableLabel="tableLabel" :config="config" @changePage="changePage"
-            @edit="editLog" @delete="deleteLog">
+            @edit="editComment" @delete="deleteComment">
         </common-table>
     </div>
 </template>
@@ -29,9 +29,9 @@
 import { mapState } from 'vuex'
 import CommonForm from '@/components/Common/Form.vue'
 import CommonTable from '@/components/Common/Table.vue'
-import { reqGetAllLog, reqUpdateLog, reqDeleteLog } from '@/api/index'
+import { reqGetAllComment, reqUpdateComment, reqDeleteComment } from '@/api/index'
 export default {
-    name: 'LogManage',
+    name: 'CommentManage',
     components: {
         CommonForm,
         CommonTable
@@ -46,44 +46,76 @@ export default {
                 type: 'input'
             },
             {
-                model: 'carNum',
-                label: '车牌号',
+                model: 'fromUser',
+                label: '回复人',
                 type: 'input'
             },
             {
-                model: 'isRegistered',
-                label: '是否有购买长期停车位',
+                model: 'toId',
+                label: '回复话题号',
                 type: 'input'
             },
             {
-                model: 'parkingNum',
-                label: '停车位编号',
+                model: 'type',
+                label: '回复类型',
                 type: 'input'
             },
             {
-                model: 'start',
-                label: '开始时间',
+                model: 'response',
+                label: '浏览量',
                 type: 'input'
             },
             {
-                model: 'end',
-                label: '结束时间',
+                model: 'isReported',
+                label: '是否被举报',
+                type: 'select',
+                opts: [
+                    {
+                        value: '1',
+                        label: '是'
+                    },
+                    {
+                        value: '0',
+                        label: '否'
+                    }
+                ]
+            },
+            {
+                model: 'isLandlord',
+                label: '是否是楼主',
+                type: 'select',
+                opts: [
+                    {
+                        value: '1',
+                        label: '是'
+                    },
+                    {
+                        value: '0',
+                        label: '否'
+                    }
+                ]
+            },
+            {
+                model: 'content',
+                label: '内容',
                 type: 'input'
             },
             {
-                model: 'totalPrice',
-                label: '停车费',
+                model: 'time',
+                label: '时间',
                 type: 'input'
             },
             ],
             operadeForm: {
                 id: '',
-                carNum: '',
-                isRegistered: '',
-                parkingNum: '',
-                start: '',
-                end: '',
-                totalPrice: '',
+                fromUser: '',
+                toId: '',
+                type: '',
+                isReported: '',
+                response: '',
+                isLandlord: '',
+                content: '',
+                time: '',
             },
             headerFormLabel: [
                 {
@@ -92,16 +124,36 @@ export default {
                     type: 'select',
                     opts: [
                         {
-                            value: 'carNum',
-                            label: '车牌号'
+                            value: 'id',
+                            label: '序号'
                         },
                         {
-                            value: 'parkingNum',
-                            label: '停车位编码'
+                            value: 'fromUser',
+                            label: '回复人'
+                        },
+                        {
+                            value: 'toId',
+                            label: '话题号'
+                        },
+                        {
+                            value: 'type',
+                            label: '回复类型'
+                        },
+                        {
+                            value: 'isReported',
+                            label: '是否被举报'
+                        },
+                        {
+                            value: 'response_min',
+                            label: '浏览量>='
+                        },
+                        {
+                            value: 'response_max',
+                            label: '浏览量<'
                         },
                         {
                             value: 'all',
-                            label: '所有停车位'
+                            label: '所有评论'
                         }
                     ]
                 },
@@ -123,33 +175,43 @@ export default {
                     width: 80
                 },
                 {
-                    prop: "carNum",
-                    label: "车牌号",
+                    prop: "fromUser",
+                    label: "回复人",
                     width: 100
                 },
                 {
-                    prop: "isRegistered",
-                    label: "是否有购买长期停车位",
+                    prop: "toId",
+                    label: "话题号",
                     width: 100
                 },
                 {
-                    prop: "parkingNum",
-                    label: "停车位编号",
+                    prop: "type",
+                    label: "类型",
                     width: 100
                 },
                 {
-                    prop: "start",
-                    label: "开始时间",
-                    width: 200
+                    prop: "isReported",
+                    label: "是否被举报",
+                    width: 100
                 },
                 {
-                    prop: "end",
-                    label: "结束时间",
-                    width: 200
+                    prop: "response",
+                    label: "浏览量",
+                    width: 100
                 },
                 {
-                    prop: "totalPrice",
-                    label: "停车费",
+                    prop: "isLandlord",
+                    label: "是否是楼主",
+                    width: 100
+                },
+                {
+                    prop: "content",
+                    label: "内容",
+                    width: 100
+                },
+                {
+                    prop: "time",
+                    label: "时间",
                     width: 100
                 }
             ],
@@ -177,7 +239,7 @@ export default {
     },
     //生命周期函数：
     created() {
-        this.getAllLog(1);
+        this.getAllComment(1);
     },
     methods: {
         async confirm() {
@@ -201,13 +263,13 @@ export default {
                 // return;
             }
             //此时编辑一个用户
-            let res = await reqUpdateLog(_this.token, _this.operadeForm)
+            let res = await reqUpdateComment(_this.token, _this.operadeForm)
             if (res.code === 200) {
                 _this.$message({
                     type: "success",
                     message: "修改成功"
                 })
-                _this.getAllLog(_this.config.page)
+                _this.getAllComment(_this.config.page)
                 return;
             }
             //否则，修改失败：
@@ -226,19 +288,20 @@ export default {
         //     }
         // },
         //获取所有10个停车位信息，并加载到表格内：
-        async getAllLog(index) {
+        async getAllComment(index) {
             let _this = this;
-            let res = await reqGetAllLog(_this.token);
+            let res = await reqGetAllComment(_this.token);
             if (res.code === 200) {             //此时请求成功
                 res.data.forEach(element => {
-                    element.isRegistered === '1' ? element.isRegistered='否' : element.isRegistered='否'
+                    element.isReported === '1' ? element.isReported='是' : element.isReported='否';
+                    element.isLandlord === '1' ? element.isLandlord='是' : element.isLandlord='否';
                 });
                 _this.config.total = res.data.length;
-                _this.tableData = [..._this.getTenLog(index, res.data)];
+                _this.tableData = [..._this.getTenComment(index, res.data)];
             }
         },
         //每次从请求到的所有数组中去除10个停车位，提交给界面
-        getTenLog(index, allLog) {
+        getTenComment(index, allLog) {
             let _this = this;
             if (index * 10 - 1 > _this.config.total) {
                 return allLog.splice((index - 1) * 10, _this.config.total - (index - 1) * 10);
@@ -247,19 +310,19 @@ export default {
         },
         //在表格内搜索
         changePage(page) {
-            this.getAllLog(page)
+            this.getAllComment(page)
         },
         //编辑用户信息
-        editLog(row) {
+        editComment(row) {
             this.operadeForm = row;
             this.operateType = 'edit'
             this.isShow = true;
         },
         //删除该用户
-        deleteLog(row) {
+        deleteComment(row) {
             let _this = this;
             //弹出提示框
-            _this.$confirm("注意：此操作将永久删除该停车位，是否继续？", "提示",
+            _this.$confirm("注意：此操作将永久删除该评论，是否继续？", "提示",
                 {
                     confirmButtonText: "确认",
                     cancelIdleCallback: "取消",
@@ -267,14 +330,14 @@ export default {
                 }).then(() => {
                     //此处说明点击了‘确认’，开始进行删除
                     // let res =  reqDeleteUser(_this.token,row.id);
-                    reqDeleteLog(_this.token, row.id).then(res => {
+                    reqDeleteComment(_this.token, row.id).then(res => {
                         console.log(res);
-                        if (res.code === 200) {
+                        if (res.code === 2) {
                             _this.$message({
                                 type: "success",
                                 message: "删除成功"
                             })
-                            _this.getAllLog(_this.config.page)
+                            _this.getAllComment(_this.config.page)
                             return
                         }
                         _this.$message({
@@ -305,34 +368,83 @@ export default {
             //开始查询
             console.log(_this.headerForm.selectItem)
             let tempArr=[];
-            let res = await reqGetAllLog(_this.token);
+            let res = await reqGetAllComment(_this.token);
             if(res.code===200){
                 res.data.forEach(element => {
                     switch(_this.headerForm.selectItem){
-                        case 'carNum':
-                            if(element.carNum!=null){
-                                let temp = element.carNum+'';
+                        case 'id':
+                            if(element.id!=null){
+                                let temp = element.id+'';
                                 if(temp.indexOf(_this.headerForm.keyword+'')>=0){
-                                    element.isRegistered = '1' ? element.isRegistered='否' : element.isRegistered='是'
+                                    element.isReported === '1' ? element.isReported='是' : element.isReported='否';
+                                    element.isLandlord === '1' ? element.isLandlord='是' : element.isLandlord='否';
                                     tempArr.push(element);
                                 }
                             }break;
-                        case 'parkingNum':
-                            if(element.parkingNum!=null){
-                                let temp = element.parkingNum+'';
+                        case 'fromUser':
+                            if(element.fromUser!=null){
+                                let temp = element.fromUser+'';
                                 if(temp.indexOf(_this.headerForm.keyword+'')>=0){
-                                    element.isRegistered = '1' ? element.isRegistered='否' : element.isRegistered='是'
+                                    element.isReported === '1' ? element.isReported='是' : element.isReported='否';
+                                    element.isLandlord === '1' ? element.isLandlord='是' : element.isLandlord='否';
                                     tempArr.push(element);
                                 }
                             }break;
+                        case 'toId':
+                            if(element.toId!=null){
+                                let temp = element.toId+'';
+                                if(temp.indexOf(_this.headerForm.keyword+'')>=0){
+                                    element.isReported === '1' ? element.isReported='是' : element.isReported='否';
+                                    element.isLandlord === '1' ? element.isLandlord='是' : element.isLandlord='否';
+                                    tempArr.push(element);
+                                }
+                            }break;
+                        case 'type':
+                            if(element.type!=null){
+                                let temp = element.type+'';
+                                if(temp.indexOf(_this.headerForm.keyword+'')>=0){
+                                    element.isReported === '1' ? element.isReported='是' : element.isReported='否';
+                                    element.isLandlord === '1' ? element.isLandlord='是' : element.isLandlord='否';
+                                    tempArr.push(element);
+                                }
+                            }break;
+                        case 'isReported':
+                            if (element.isReported != null) {
+                                element.isReported === '1' ? element.isReported='是' : element.isReported='否';
+                                element.isLandlord === '1' ? element.isLandlord='是' : element.isLandlord='否';
+                                let temp = element.isReported + '';
+                                if (temp.indexOf(_this.headerForm.keyword + '') >= 0) {
+                                    tempArr.push(element);
+                                }
+                            } break;
+                        case 'response_min':
+                            if (element.response != null) {
+                                let temp = element.response + '';
+                                if (element.response >= _this.headerForm.keyword) {
+                                    element.isLandlord === '1' ? element.isLandlord='是' : element.isLandlord='否';
+                                    element.isReported === '1' ? element.isReported = '是' : element.isReported = '否'
+                                    tempArr.push(element);
+
+                                }
+                            } break;
+                        case 'response_max':
+                            if (element.response != null) {
+                                let temp = element.response + '';
+                                if (element.response < _this.headerForm.keyword) {
+                                    element.isLandlord === '1' ? element.isLandlord='是' : element.isLandlord='否';
+                                    element.isReported === '1' ? element.isReported = '是' : element.isReported = '否'
+                                    tempArr.push(element);
+
+                                }
+                            } break;
                         case 'all':
-                            _this.getAllLog(1);
+                            _this.getAllComment(1);
                         default: return;
                     }
                 });
                 _this.config.total=tempArr.length;
                 _this.config.page=1;                //默认跳到第一页
-                _this.tableData = [..._this.getTenLog(1,tempArr)];
+                _this.tableData = [..._this.getTenComment(1,tempArr)];
             }
         },
         async lostFocus(){

@@ -368,3 +368,108 @@ export const reqUpdatePayment= (token,payment) => {
   })
 }
 
+//获取所有的话题
+export const reqGetAllTopic = (token) => {
+  return requests({
+    url: '/forum/topic',
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+  })
+}
+
+//新增话题
+export const reqCreateTopic = (token, topic) => {
+  return requests({
+    url: '/forum/topic',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+    data: topic
+  })
+}
+
+//更新话题信息
+export const reqUpdateTopic = (token, topic) => {
+  return requests({
+    url: '/forum/topic/update',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+    data: topic
+  })
+}
+
+//删除话题
+export const reqDeleteTopic = (token, id) => {
+  return requests({
+    url: '/forum/topic',
+    method: 'delete',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+    params: {
+      id
+    }
+  })
+}
+
+//获取所有的回帖
+export const reqGetAllComment = (token) => {
+  return requests({
+    url: '/forum/comment',
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    }
+  })
+}
+
+//新增
+// export const reqCreateTopic = (token, topic) => {
+//   return requests({
+//     url: '/forum/topic',
+//     method: 'post',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       token
+//     },
+//     data: topic
+//   })
+// }
+
+//更新回帖信息
+export const reqUpdateComment = (token, comment) => {
+  return requests({
+    url: '/forum/comment/update',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+    data: comment
+  })
+}
+
+//删除回帖
+export const reqDeleteComment = (token, id) => {
+  return requests({
+    url: '/forum/comment',
+    method: 'delete',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+    params: {
+      id
+    }
+  })
+}

@@ -65,22 +65,16 @@ export default {
           url: "3",
         },
         {
-          label:'论坛管理',
-          name: 'ForumManage',
-          icon: "el-icon-s-comment",
-          url: "4",
-        },
-        {
           label:'维修管理',
           name: "RepairManage",
           icon: "el-icon-key",
-          url: "5",
+          url: "4",
         },
         {
           label:'志愿者管理',
           name: "VolunteerManage",
           icon: "el-icon-s-check",
-          url: "6",
+          url: "5",
         },
       ],
       childMenu: [
@@ -135,6 +129,26 @@ export default {
             },
           ],
           url: "b",
+        },
+        {
+          label:'论坛管理',
+          name: 'ForumManage',
+          icon: "el-icon-s-comment",
+          child: [
+            {
+              label:"话题管理",
+              name: "TopicManage",
+              icon: "el-icon-s-comment",
+              url: "3_1",
+            },
+            {
+              label:"评论管理",
+              name: "CommentManage",
+              icon: "el-icon-s-comment",
+              url: "3_2",
+            },
+          ],
+          url: "c",
         },
       ],
     };
