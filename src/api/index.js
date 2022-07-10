@@ -278,6 +278,20 @@ export const healthCheckSubmit = (uid, temp,
     }
   })
 }
+
+export const reqCreateAcid = (token,user) => {
+  return requests({
+    url: '/acid/insert_acid',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      token
+    },
+    data:user //前端直接是一个类，此处也用类,不可加大括号
+  })
+}
+
+
 export const reqGetAllHealthInfo= (token) => {
   return requests({
     url: '/acid/get_acid',
@@ -382,8 +396,8 @@ export const reqGetAllTopic = (token) => {
 
 export const reqCreateRepair= (token,repair) => {
   return requests({
-    url: '/repair/',
-    method: 'get',
+    url: '/repair/sumbit',
+    method: 'post',
     headers: {
       'Content-Type': 'application/json',
       token

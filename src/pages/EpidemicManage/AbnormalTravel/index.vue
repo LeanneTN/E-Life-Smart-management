@@ -46,7 +46,7 @@
 import {mapState} from 'vuex'
 import CommonForm from '@/components/Common/Form.vue'
 import CommonTable from '@/components/Common/Table.vue'
-import {reqGetAllUsers,reqUpdateUser,reqCreateUser,reqDeleteUser,reqGetAllHealthInfo} from '@/api/index'
+import {reqGetAllUsers,reqUpdateUser,reqCreateAcid,reqDeleteUser,reqGetAllHealthInfo} from '@/api/index'
 export default{
     name:'AbnomalTravel',
     components:{
@@ -178,7 +178,7 @@ export default{
             let _this=this;
             _this.isShow=false;
             if(_this.operateType==='add'){          //此时新增一个用户
-                let res = await reqCreateUser(_this.token,_this.operadeForm)
+                let res = await reqCreateAcid(_this.token,_this.operadeForm)
                  if(res.code===200){
                 _this.$message({
                     type:"success",
